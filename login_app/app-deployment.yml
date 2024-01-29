@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: jesus20a/projects:login-app-v0.0.1
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5000
+        env:
+          - name: SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: SECRET_KEY
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: MYSQL_DATABASE
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: MYSQL_ROOT_PASSWORD
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: MYSQL_USER
+      imagePullSecrets:
+        - name: regcred
